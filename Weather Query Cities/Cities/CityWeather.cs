@@ -12,14 +12,14 @@ namespace Weather_Query_Cities.Cities
     {
         public static async Task Main(string[] args)
         {
-            await GetLondonWeather();
+            await GetWeather();
+            string city = "";
         }
 
-        private static async Task GetLondonWeather()
+        private static async Task GetWeather()
         {
             string apiKey = "89cd960aa41028654097754fdccdb9ed";
-            string city = "London";
-            string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
+            string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={}&appid={apiKey}&units=metric";
 
             using (HttpClient client = new HttpClient())
             {
@@ -36,6 +36,12 @@ namespace Weather_Query_Cities.Cities
                     Console.WriteLine($"Error: {e.Message}");
                 }
             }
+        }
+
+        public void GetCity()
+        {
+            Console.WriteLine("Enter City: ");
+            string city = Console.ReadLine();
         }
 
         private static void ParseWeatherInfo(string responseBody)
