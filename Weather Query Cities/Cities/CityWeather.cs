@@ -1,135 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Metrics;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Weather_Query_Cities.Cities
 {
-    public struct WeatherInfo
+    public class WeatherInfo
     {
-        public int Temperature { get; } // Temperature in degrees Celsius
-        public bool IsCloudy { get; }   // Indicates whether it's cloudy
-        public bool IsRainToday { get; } // Indicates whether it's raining today
-        public DateTime Sunrise { get; } // Sunrise time
-        public DateTime Sunset { get; }  // Sunset time
-
-        // Constructor to initialize properties
-        public WeatherInfo(int temperature, bool isCloudy, bool isRainToday, DateTime sunrise, DateTime sunset)
+        public static async Task Main(string[] args)
         {
-            Temperature = temperature;
-            IsCloudy = isCloudy;
-            IsRainToday = isRainToday;
-            Sunrise = sunrise;
-            Sunset = sunset;
+            await GetLondonWeather();
         }
 
-        public WeatherInfo London()
+        private static async Task GetLondonWeather()
         {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
+            string apiKey = "89cd960aa41028654097754fdccdb9ed";
+            string city = "London";
+            string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
 
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    response.EnsureSuccessStatusCode(); // Throw exception if HTTP error
+
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    ParseWeatherInfo(responseBody);
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine($"Error: {e.Message}");
+                }
+            }
         }
 
-        public WeatherInfo Leeds()
+        private static void ParseWeatherInfo(string responseBody)
         {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
+            // Parse JSON response
+            JObject weatherData = JObject.Parse(responseBody);
 
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
+            // Extract relevant information
+            int temperature = (int)weatherData["main"]["temp"];
+            bool isCloudy = ((string)weatherData["weather"][0]["main"]).Equals("Clouds", StringComparison.OrdinalIgnoreCase);
+            bool isRainToday = ((string)weatherData["weather"][0]["main"]).Equals("Rain", StringComparison.OrdinalIgnoreCase);
+            DateTime sunrise = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunrise"]).LocalDateTime;
+            DateTime sunset = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunset"]).LocalDateTime;
 
-        public WeatherInfo Wakefiled()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Edinburgh()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Brussels()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Munich()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Dortmund()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Berlin()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
-        }
-
-        public WeatherInfo Geneva()
-        {
-            int temperature = 10;
-            bool isCloudy = true;
-            bool isRainToday = true;
-            DateTime sunrise = DateTime.Parse("06:30 AM");
-            DateTime sunset = DateTime.Parse("05:00 PM");
-
-            // Return a new instance of WeatherInfo with the fetched data
-            return new WeatherInfo(temperature, isCloudy, isRainToday, sunrise, sunset);
+            // Display weather information
+            Console.WriteLine($"Temperature: {temperature}°C");
+            Console.WriteLine($"Cloudy: {isCloudy}");
+            Console.WriteLine($"Rain Today: {isRainToday}");
+            Console.WriteLine($"Sunrise: {sunrise}");
+            Console.WriteLine($"Sunset: {sunset}");
         }
     }
 }
