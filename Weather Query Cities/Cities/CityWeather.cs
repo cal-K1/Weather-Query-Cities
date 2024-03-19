@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Metrics;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Weather_Query_Cities.Cities
 {
@@ -16,10 +10,11 @@ namespace Weather_Query_Cities.Cities
             string city = "";
         }
 
-        private static async Task GetWeather()
+        public static async Task GetWeather()
         {
+            string city = GetCity();
             string apiKey = "89cd960aa41028654097754fdccdb9ed";
-            string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={}&appid={apiKey}&units=metric";
+            string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
 
             using (HttpClient client = new HttpClient())
             {
@@ -38,13 +33,14 @@ namespace Weather_Query_Cities.Cities
             }
         }
 
-        public void GetCity()
+        public static string GetCity()
         {
             Console.WriteLine("Enter City: ");
             string city = Console.ReadLine();
+            return city;
         }
 
-        private static void ParseWeatherInfo(string responseBody)
+        public static void ParseWeatherInfo(string responseBody)
         {
             // Parse JSON response
             JObject weatherData = JObject.Parse(responseBody);
@@ -57,7 +53,7 @@ namespace Weather_Query_Cities.Cities
             DateTime sunset = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunset"]).LocalDateTime;
 
             // Display weather information
-            Console.WriteLine($"Temperature: {temperature}°C");
+            Console.WriteLine($"\nTemperature: {temperature}°C");
             Console.WriteLine($"Cloudy: {isCloudy}");
             Console.WriteLine($"Rain Today: {isRainToday}");
             Console.WriteLine($"Sunrise: {sunrise}");
