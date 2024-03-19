@@ -9,11 +9,13 @@ namespace Weather_Query_Cities.Cities
             await WeatherService.GetWeather();
         }
 
-        public static string GetCity()
+        public static void DisplayWeatherInfo(int temperature, bool cloudCheck, bool rainCheck, DateTime sunrise, DateTime sunset)
         {
-            Console.WriteLine("Enter City: ");
-            string city = Console.ReadLine();
-            return city;
+            Console.WriteLine($"\nTemperature: {temperature}°C");
+            Console.WriteLine($"Cloudy: {WeatherService.CloudCheck(cloudCheck)}");
+            Console.WriteLine($"Rain Today: {WeatherService.RainTodayCheck(rainCheck)}");
+            Console.WriteLine($"Sunrise: {sunrise.TimeOfDay}");
+            Console.WriteLine($"Sunset: {sunset.TimeOfDay} \n");
         }
     }
 }

@@ -9,9 +9,8 @@ namespace Weather_Query_Cities.Services
         {
             while (true)
             {
-
                 // Environment variable in place of API key
-                string city = WeatherInfo.GetCity();
+                string city = GetCity();
                 string? apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
                 if (string.IsNullOrEmpty(apiKey))
@@ -30,7 +29,7 @@ namespace Weather_Query_Cities.Services
 
                         response.EnsureSuccessStatusCode(); // Throw exception if HTTP error
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        await ParseWeatherInfo(responseBody);
+                        await FormatWeatherInfo(responseBody);
                     }
                     catch (HttpRequestException e)
                     {
@@ -40,7 +39,7 @@ namespace Weather_Query_Cities.Services
             }
         }
 
-        public static async Task ParseWeatherInfo(string responseBody)
+        public static async Task FormatWeatherInfo(string responseBody)
         {
             // Parse JSON response
             JObject weatherData = JObject.Parse(responseBody);
@@ -52,11 +51,7 @@ namespace Weather_Query_Cities.Services
             DateTime sunrise = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunrise"]).LocalDateTime;
             DateTime sunset = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunset"]).LocalDateTime;
 
-            Console.WriteLine($"\nTemperature: {temperature}°C");
-            Console.WriteLine($"Cloudy: {CloudCheck(cloudCheck)}");
-            Console.WriteLine($"Rain Today: {RainTodayCheck(rainCheck)}");
-            Console.WriteLine($"Sunrise: {sunrise.TimeOfDay}");
-            Console.WriteLine($"Sunset: {sunset.TimeOfDay} \n");
+            WeatherInfo.DisplayWeatherInfo(temperature, cloudCheck, rainCheck, sunrise, sunset);
         }
 
         public static string CloudCheck(bool cloudCheck)
@@ -85,6 +80,13 @@ namespace Weather_Query_Cities.Services
                 isRainyToday = "No";
             }
             return isRainyToday;
+        }
+
+        public static string GetCity()
+        {
+            Console.WriteLine("Enter City: ");
+            string city = Console.ReadLine();
+            return city;
         }
     }
 }
