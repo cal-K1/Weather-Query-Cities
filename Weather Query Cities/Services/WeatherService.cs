@@ -3,7 +3,7 @@ using Weather_Query_Cities.Cities;
 
 namespace Weather_Query_Cities.Services
 {
-    internal class WeatherService
+    public class WeatherService
     {
         public static async Task GetWeather()
         {
