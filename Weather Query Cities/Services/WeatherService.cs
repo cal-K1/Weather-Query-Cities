@@ -10,7 +10,7 @@ namespace Weather_Query_Cities.Services
             while (true)
             {
                 string city = WeatherInfo.GetCity();
-                string apiKey = Environment.GetEnvironmentVariable("OPENWEATHERMAP_API_KEY");
+                string? apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
                 if (string.IsNullOrEmpty(apiKey))
                 {
@@ -25,8 +25,8 @@ namespace Weather_Query_Cities.Services
                     try
                     {
                         HttpResponseMessage response = await client.GetAsync(apiUrl);
-                        response.EnsureSuccessStatusCode(); // Throw exception if HTTP error
 
+                        response.EnsureSuccessStatusCode(); // Throw exception if HTTP error
                         string responseBody = await response.Content.ReadAsStringAsync();
                         await ParseWeatherInfo(responseBody);
                     }
