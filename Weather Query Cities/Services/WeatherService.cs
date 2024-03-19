@@ -9,6 +9,8 @@ namespace Weather_Query_Cities.Services
         {
             while (true)
             {
+
+                // Environment variable in place of API key
                 string city = WeatherInfo.GetCity();
                 string? apiKey = Environment.GetEnvironmentVariable("API_KEY");
 
