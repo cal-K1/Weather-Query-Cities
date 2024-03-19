@@ -10,7 +10,14 @@ namespace Weather_Query_Cities.Services
             while (true)
             {
                 string city = WeatherInfo.GetCity();
-                string apiKey = "89cd960aa41028654097754fdccdb9ed";
+                string apiKey = Environment.GetEnvironmentVariable("OPENWEATHERMAP_API_KEY");
+
+                if (string.IsNullOrEmpty(apiKey))
+                {
+                    Console.WriteLine("Error: OPENWEATHERMAP_API_KEY environment variable is not set.");
+                    return;
+                }
+
                 string apiUrl = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
 
                 using (HttpClient client = new HttpClient())
@@ -46,8 +53,8 @@ namespace Weather_Query_Cities.Services
             Console.WriteLine($"\nTemperature: {temperature}°C");
             Console.WriteLine($"Cloudy: {CloudCheck(cloudCheck)}");
             Console.WriteLine($"Rain Today: {RainTodayCheck(rainCheck)}");
-            Console.WriteLine($"Sunrise: {sunrise}");
-            Console.WriteLine($"Sunset: {sunset} \n");
+            Console.WriteLine($"Sunrise: {sunrise.TimeOfDay}");
+            Console.WriteLine($"Sunset: {sunset.TimeOfDay} \n");
         }
 
         public static string CloudCheck(bool cloudCheck)
