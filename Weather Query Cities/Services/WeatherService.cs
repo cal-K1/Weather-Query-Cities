@@ -47,7 +47,7 @@ namespace Weather_Query_Cities.Services
             // Extract relevant information
             int temperature = (int)weatherData["main"]["temp"];
             bool cloudCheck = ((string)weatherData["weather"][0]["main"]).Equals("Clouds", StringComparison.OrdinalIgnoreCase);
-            bool rainCheck = ((string)weatherData["weather"][0]["main"]).Equals("Rainy", StringComparison.OrdinalIgnoreCase);
+            bool rainCheck = ((string)weatherData["weather"][0]["main"]).Equals("Rain", StringComparison.OrdinalIgnoreCase);
             DateTime sunrise = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunrise"]).LocalDateTime;
             DateTime sunset = DateTimeOffset.FromUnixTimeSeconds((long)weatherData["sys"]["sunset"]).LocalDateTime;
 
@@ -85,7 +85,8 @@ namespace Weather_Query_Cities.Services
         public static string GetCity()
         {
             Console.WriteLine("Enter City: ");
-            return Console.ReadLine();
+            string city = Console.ReadLine();
+            return city;
         }
     }
 }
