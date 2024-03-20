@@ -3,7 +3,7 @@ using Weather_Query_Cities.Services;
 
 namespace WeatherTest
 {
-    public class UnitTest1
+    public class WeatherAppTest
     {
         [Fact]
         public void WeatherService_CloudCheck_ReturnsString()
